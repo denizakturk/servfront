@@ -15,5 +15,17 @@ func GetRequest(r *http.Request) *Request {
 		panic("Body read error: " + err.Error())
 	}
 	json.Unmarshal(readBody, request)
+
+	if "" == request.Header.Operate {
+		request.Header.Operate = r.RequestURI
+	}
+
+	if "" == request.Header.SessionToken {
+		cookie, cookieErr := r.Cookie("session_id")
+		if nil == cookieErr {
+			request.Header.SessionToken = cookie.Value
+		}
+	}
+
 	return request
 }

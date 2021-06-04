@@ -11,18 +11,23 @@ type Header struct {
 }
 
 type Security struct {
-	token          string   `json:"token"`
-	basicAuth      string   `json:"basic_auth"`
+	Token          string   `json:"token"`
+	BasicAuth      string   `json:"basic_auth"`
+	Scope          string   `json:"scope"`
+	GrantType      string   `json:"grant_type"`
 	basicAuthSplit []string `json:"-"`
 }
 
-func (s *Security) GetToken() string     { return s.token }
-func (s *Security) GetBasicAuth() string { return s.basicAuth }
+func (s *Security) GetToken() string     { return s.Token }
+func (s *Security) GetBasicAuth() string { return s.BasicAuth }
 func (s *Security) encodeBasicAuth() *[]string {
-	if len(s.basicAuthSplit) == 2 {
+	if nil != s.basicAuthSplit && len(s.basicAuthSplit) == 2 {
 		return &s.basicAuthSplit
 	}
-	s.basicAuthSplit = strings.SplitAfterN(base64.StdEncoding.EncodeToString([]byte(s.basicAuth)), ":", 2)
+
+	basicToken := s.BasicAuth[6:len(s.BasicAuth)]
+	decodeToken, _ := base64.StdEncoding.DecodeString(basicToken)
+	s.basicAuthSplit = strings.Split(string(decodeToken), ":")
 	if len(s.basicAuthSplit) > 1 {
 		return &s.basicAuthSplit
 	}
@@ -39,7 +44,7 @@ func (s *Security) GetBasicAuthPassword() string {
 }
 
 type Request struct {
-	header   Header      `json:"header"`
-	security Security    `json:"security"`
+	Header   Header      `json:"header"`
+	Security Security    `json:"security"`
 	Body     interface{} `json:"body"`
 }
