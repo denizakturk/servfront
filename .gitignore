@@ -15,3 +15,14 @@
 # vendor/
 
 .idea
+
+# service frontend test files
+
+server.go
+main.go
+src
+
+Dockerfile
+run.sh
+
+*_test.go
