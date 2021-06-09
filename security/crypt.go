@@ -3,7 +3,7 @@ package security
 import (
 	"encoding/base64"
 	"math"
-	"service-frontend/config"
+	"github.com/denizakturk/service-frontend/config"
 )
 
 type Crypt struct {

@@ -3,7 +3,7 @@ package config
 import (
 	"errors"
 	"regexp"
-	"service-frontend/bridge"
+	"github.com/denizakturk/service-frontend/bridge"
 )
 
 type Router struct {
