@@ -18,7 +18,7 @@
 
 # service frontend test files
 
-server.go
+/server.go
 main.go
 src
 
