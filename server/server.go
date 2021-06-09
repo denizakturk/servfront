@@ -3,7 +3,7 @@ package server
 import (
 	"log"
 	"net/http"
-	"github.com/denizakturk/service-frontend/config"
+	"github.com/denizakturk/servfront/config"
 )
 
 func registerRouter(w http.ResponseWriter, r *http.Request) {

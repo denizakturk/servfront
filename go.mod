@@ -1,3 +1,3 @@
-module github.com/denizakturk/service-frontend
+module github.com/denizakturk/servfront
 
 go 1.14
