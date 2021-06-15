@@ -1,13 +1,15 @@
 package server
 
 import (
+	"github.com/denizakturk/servfront/kernel"
 	"log"
 	"net/http"
-	"github.com/denizakturk/servfront/config"
 )
 
 func registerRouter(w http.ResponseWriter, r *http.Request) {
-	for _, routerHolder := range config.Routes.RouterHolder {
+	kernel.Holder.TokenCatcher(r)
+	kernel.Holder.Checker()
+	for _, routerHolder := range kernel.Holder.Config.Router.RouterHolder {
 		for _, router := range routerHolder.Routers {
 			if router.Pattern.MatchString(r.URL.Path) {
 				router.Controller.MiddleWare(w, r)
