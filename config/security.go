@@ -1,38 +1,27 @@
 package config
 
-import (
-	"crypto/sha256"
-	"encoding/hex"
-	"math/rand"
-)
-
-func NewSecurityConfig(key, iv string) *Crypt {
-	return &Crypt{Key: key, IV: iv}
+type Securing struct {
+	EncryptResponse bool
+	TokenValidate   bool
+	TokenHeaderName string
 }
 
-type Crypt struct {
-	Key string
-	IV  string
+func (s *Securing) SetTokenHeaderName(tokenHeaderName string) {
+	s.TokenHeaderName = tokenHeaderName
 }
 
-func (c *Crypt) GetKeyBytes() []byte {
-	return c.sha256([]byte(c.Key))
+func (s *Securing) EnableEncryptResponse() {
+	s.EncryptResponse = true
 }
 
-func (c *Crypt) GetIVBytes() []byte {
-	return c.sha256([]byte(c.IV))[:16]
+func (s *Securing) DisableEncryptResponse() {
+	s.EncryptResponse = false
 }
 
-func (c Crypt) sha256(data []byte) []byte {
-	hashed := sha256.Sum256(data)
-	return []byte(hex.EncodeToString(hashed[:]))
+func (s *Securing) EnableTokenValidation() {
+	s.TokenValidate = true
 }
 
-func (c Crypt) randString() string {
-	rrk := []rune{}
-	for i := 0; i < 16; i++ {
-		rrk = append(rrk, int32(rand.Intn(127)))
-	}
-
-	return string(rrk)
+func (s *Securing) DisableTokenValidation() {
+	s.TokenValidate = false
 }
