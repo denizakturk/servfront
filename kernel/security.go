@@ -1,21 +1,24 @@
 package kernel
 
-func (k *Service) Checker() {
-	k.TokenChecker()
+import "errors"
+
+func (k *Service) Checker() error {
+	return k.TokenChecker()
 }
 
-func (k *Service) TokenChecker() {
+func (k *Service) TokenChecker() error {
 	if k.Config.Securing.TokenValidate {
-		if k.Security.TokenValidator == nil {
-			panic("Validator not found!")
+		if k.Security.TokenValidator.Validator == nil {
+			return errors.New("Validator not found!")
 		}
 
 		if k.Request.Token == "" {
-			panic("Token not found!")
+			return errors.New("Token not found!")
 		}
 
 		if ok, err := k.Security.TokenValidator.ValidationAgent(k.Request.Token); !ok {
-			panic(err)
+			return err
 		}
 	}
+	return nil
 }
