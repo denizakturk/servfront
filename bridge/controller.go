@@ -9,8 +9,8 @@ import (
 type Controller Struct
 
 type ServiceResponse struct {
-	Error error       `json:"error"`
-	Data  interface{} `json:"data"`
+	Error string      `json:"error,omitempty"`
+	Data  interface{} `json:"data,omitempty"`
 }
 
 func (r *ServiceResponse) WriteResponse(w http.ResponseWriter) {

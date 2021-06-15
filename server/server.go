@@ -12,7 +12,7 @@ func registerRouter(w http.ResponseWriter, r *http.Request) {
 	checkerError := kernel.Holder.Checker()
 
 	if checkerError != nil {
-		response := bridge.ServiceResponse{Error: checkerError}
+		response := &bridge.ServiceResponse{Error: checkerError.Error()}
 		response.WriteResponse(w)
 		return
 	}
