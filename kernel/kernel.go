@@ -2,6 +2,7 @@ package kernel
 
 import (
 	"github.com/denizakturk/servfront/config"
+	"github.com/denizakturk/servfront/router"
 	"github.com/denizakturk/servfront/security"
 	"net/http"
 )
@@ -45,8 +46,11 @@ func (k *Service) SetCryptKeys(key, iv string) {
 	k.Config.Crypt.IV = iv
 }
 
-func (k *Service) AddRoute(clusterName string, router *config.Router) {
-	k.Config.Router.AddRouterToCluster(clusterName, router)
+func (k *Service) AddRoute(clusterName string, route *router.Route) {
+	if nil != route.Address{
+		route.Address.PrepareAddress()
+	}
+	k.Config.Router.AddRouterToCluster(clusterName, route)
 }
 
 func (k *Service) SetTokenValidator(validator func(token string) (isValid bool, err error)) {

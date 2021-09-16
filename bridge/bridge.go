@@ -1,9 +1,15 @@
 package bridge
 
-import "net/http"
+import (
+	"net/http"
+)
+
+type UrlParams struct {
+	Params map[string]string
+}
 
 type Struct interface {
-	MiddleWare(w http.ResponseWriter, r *http.Request)
+	MiddleWare(w http.ResponseWriter, r *http.Request, urlParams *UrlParams)
 	EndpointRunner(func() *ServiceResponse)
 }
 

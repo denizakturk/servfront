@@ -18,9 +18,13 @@ func registerRouter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, routerHolder := range kernel.Holder.Config.Router.RouterHolder {
-		for _, router := range routerHolder.Routers {
-			if router.Pattern.MatchString(r.URL.Path) {
-				router.Controller.MiddleWare(w, r)
+		for _, router := range routerHolder.Routes {
+			if nil != router.Pattern && router.Pattern.MatchString(r.URL.Path) {
+				router.Controller.MiddleWare(w, r, &bridge.UrlParams{})
+				router.Controller.EndpointRunner(router.Endpoint)
+			} else if nil != router.Address && router.Address.RegexpPattern.MatchString(r.URL.Path) {
+				router.Address.CatchAddressParametersValue(r.URL.Path)
+				router.Controller.MiddleWare(w, r, &bridge.UrlParams{Params: router.Address.ParamsToMap()})
 				router.Controller.EndpointRunner(router.Endpoint)
 			}
 		}

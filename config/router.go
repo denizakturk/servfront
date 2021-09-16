@@ -2,29 +2,22 @@ package config
 
 import (
 	"errors"
-	"regexp"
-	"github.com/denizakturk/servfront/bridge"
+	"github.com/denizakturk/servfront/router"
 )
 
-type Router struct {
-	Name       string
-	Pattern    *regexp.Regexp
-	Controller bridge.Struct
-	Endpoint   func() *bridge.ServiceResponse
-}
 
 type RouterHolder struct {
-	Routers map[string]*Router
+	Routes map[string]*router.Route
 }
 
-func (rh *RouterHolder) AddRouter(router *Router) error {
-	if nil == rh.Routers {
-		rh.Routers = make(map[string]*Router)
+func (rh *RouterHolder) AddRouter(route *router.Route) error {
+	if nil == rh.Routes {
+		rh.Routes = make(map[string]*router.Route)
 	}
-	if _, ok := rh.Routers[router.Name]; !ok {
-		rh.Routers[router.Name] = router
+	if _, ok := rh.Routes[route.Name]; !ok {
+		rh.Routes[route.Name] = route
 	} else {
-		return errors.New("Duplicate router name | " + router.Name)
+		return errors.New("Duplicate router name | " + route.Name)
 	}
 
 	return nil
@@ -34,7 +27,7 @@ type RouterHolderCluster struct {
 	RouterHolder map[string]*RouterHolder
 }
 
-func (rhc *RouterHolderCluster) AddRouterToCluster(clusterName string, router *Router) {
+func (rhc *RouterHolderCluster) AddRouterToCluster(clusterName string, route *router.Route) {
 	if nil == rhc.RouterHolder {
 		rhc.RouterHolder = make(map[string]*RouterHolder)
 	}
@@ -42,7 +35,7 @@ func (rhc *RouterHolderCluster) AddRouterToCluster(clusterName string, router *R
 		routerHolder := &RouterHolder{}
 		rhc.RouterHolder[clusterName] = routerHolder
 	}
-	rhc.RouterHolder[clusterName].AddRouter(router)
+	rhc.RouterHolder[clusterName].AddRouter(route)
 }
 
 var Routes = &RouterHolderCluster{}
