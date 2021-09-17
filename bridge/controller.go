@@ -26,15 +26,16 @@ func (r ServiceResponseError) MarshalJSON() ([]byte, error) {
 	return []byte(""), nil
 }
 
-func (r ServiceResponseError) SetError(err error) {
+func (r *ServiceResponseError) SetError(err error) {
 	if nil != err {
 		r.s = err.Error()
 	}
 }
 
 type ServiceResponse struct {
-	Error *ServiceResponseError `json:"error,omitempty"`
-	Data  interface{}           `json:"data,omitempty"`
+	Error        error                 `json:"-"`
+	DisplayError *ServiceResponseError `json:"error,omitempty"`
+	Data         interface{}           `json:"data,omitempty"`
 }
 
 func (r *ServiceResponse) WriteResponse(w http.ResponseWriter) {
@@ -43,8 +44,15 @@ func (r *ServiceResponse) WriteResponse(w http.ResponseWriter) {
 	} else {
 		w.WriteHeader(200)
 	}
+
+	if nil == r.DisplayError && nil != r.Error {
+		r.DisplayError = &ServiceResponseError{}
+		r.DisplayError.SetError(r.Error)
+	}
+
 	response, _ := json.Marshal(*r)
 	fmt.Fprintln(w, string(response))
 	r.Error = nil
+	r.DisplayError = nil
 	r.Data = nil
 }
