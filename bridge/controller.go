@@ -9,11 +9,18 @@ import (
 type Controller Struct
 
 type ServiceResponse struct {
-	Error string      `json:"error,omitempty"`
+	Error error       `json:"error,omitempty"`
 	Data  interface{} `json:"data,omitempty"`
 }
 
 func (r *ServiceResponse) WriteResponse(w http.ResponseWriter) {
+	if nil != r.Error {
+		w.WriteHeader(500)
+	} else {
+		w.WriteHeader(200)
+	}
 	response, _ := json.Marshal(*r)
 	fmt.Fprintln(w, string(response))
+	r.Error = nil
+	r.Data = nil
 }
