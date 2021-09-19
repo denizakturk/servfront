@@ -16,9 +16,9 @@ func (r *RouteAddress) PrepareAddress() {
 			oldStr := strings.Join([]string{"{", val.ParamName, "}"}, "")
 			var rString = ""
 			if val.ParamType == "number" {
-				rString = "[1-9]+"
+				rString = "[0-9]+"
 			} else if val.ParamType == "string" {
-				rString = "[a-z|A-Z|1-9-_]+"
+				rString = "[a-z|A-Z|0-9-_]+"
 			}
 			newStr := strings.Join([]string{"(?m)(?P<", val.ParamName, ">", rString, ")"}, "")
 			regexpString = strings.Replace(regexpString, oldStr, newStr, 1)
