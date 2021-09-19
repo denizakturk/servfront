@@ -38,11 +38,15 @@ type ServiceResponse struct {
 	Data         interface{}           `json:"data,omitempty"`
 }
 
-func (r *ServiceResponse) WriteResponse(w http.ResponseWriter) {
-	if nil != r.Error {
-		w.WriteHeader(500)
+func (r *ServiceResponse) WriteResponse(w http.ResponseWriter, customErrorCode *int) {
+	if nil == customErrorCode {
+		if nil != r.Error {
+			w.WriteHeader(500)
+		} else {
+			w.WriteHeader(200)
+		}
 	} else {
-		w.WriteHeader(200)
+		w.WriteHeader(*customErrorCode)
 	}
 
 	if nil == r.DisplayError && nil != r.Error {

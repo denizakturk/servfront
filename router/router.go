@@ -18,7 +18,7 @@ func (r *RouteAddress) PrepareAddress() {
 			if val.ParamType == "number" {
 				rString = "[1-9]+"
 			} else if val.ParamType == "string" {
-				rString = "[a-z|A-Z|1-9]+"
+				rString = "[a-z|A-Z|1-9-_]+"
 			}
 			newStr := strings.Join([]string{"(?m)(?P<", val.ParamName, ">", rString, ")"}, "")
 			regexpString = strings.Replace(regexpString, oldStr, newStr, 1)
@@ -29,7 +29,7 @@ func (r *RouteAddress) PrepareAddress() {
 }
 
 func (r *RouteAddress) PrepareParams() {
-	mathParams := regexp.MustCompile("({[a-z|A-Z]+})")
+	mathParams := regexp.MustCompile("({[a-z|A-Z-_]+})")
 	matches := mathParams.FindAll([]byte(r.Pattern), -1)
 	matchParams := []RouteAddressParameter{}
 	for _, val := range matches {
