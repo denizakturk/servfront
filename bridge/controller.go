@@ -42,8 +42,6 @@ func (r *ServiceResponse) WriteResponse(w http.ResponseWriter, customErrorCode *
 	if nil == customErrorCode {
 		if nil != r.Error {
 			w.WriteHeader(500)
-		} else {
-			w.WriteHeader(200)
 		}
 	} else {
 		w.WriteHeader(*customErrorCode)
