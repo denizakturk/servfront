@@ -42,6 +42,7 @@ BreakHolder:
 		}
 
 		runnableRouter.Controller.EndpointRunner(runnableRouter.Endpoint)
+		return
 	}
 	if !matchUrl {
 		response := &bridge.ServiceResponse{Error: errors.New("Url not found: " + r.URL.Path)}
