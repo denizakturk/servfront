@@ -2,37 +2,46 @@ package server
 
 import (
 	"errors"
-	"github.com/denizakturk/servfront/bridge"
-	"github.com/denizakturk/servfront/kernel"
 	"log"
 	"net/http"
+
+	"github.com/denizakturk/servfront/bridge"
+	"github.com/denizakturk/servfront/kernel"
+	"github.com/denizakturk/servfront/router"
 )
 
 func registerRouter(w http.ResponseWriter, r *http.Request) {
 	kernel.Holder.TokenCatcher(r)
-	checkerError := kernel.Holder.Checker()
 	matchUrl := false
-	if checkerError != nil {
-		response := &bridge.ServiceResponse{Error: checkerError}
-		response.WriteResponse(w, nil)
-		return
-	}
+	var runnableRouter *router.Route = nil
 BreakHolder:
 	for _, routerHolder := range kernel.Holder.Config.Router.RouterHolder {
 		for _, router := range routerHolder.Routes {
 			if nil != router.Pattern && router.Pattern.MatchString(r.URL.Path) {
-				router.Controller.MiddleWare(w, r, &bridge.UrlParams{})
-				router.Controller.EndpointRunner(router.Endpoint)
+				runnableRouter = router
+				runnableRouter.Controller.MiddleWare(w, r, &bridge.UrlParams{})
 				matchUrl = true
 				break BreakHolder
 			} else if nil != router.Address && router.Address.RegexpPattern.MatchString(r.URL.Path) {
-				router.Address.CatchAddressParametersValue(r.URL.Path)
-				router.Controller.MiddleWare(w, r, &bridge.UrlParams{Params: router.Address.ParamsToMap()})
-				router.Controller.EndpointRunner(router.Endpoint)
+				runnableRouter = router
+				runnableRouter.Address.CatchAddressParametersValue(r.URL.Path)
+				runnableRouter.Controller.MiddleWare(w, r, &bridge.UrlParams{Params: router.Address.ParamsToMap()})
 				matchUrl = true
 				break BreakHolder
 			}
 		}
+	}
+	if matchUrl {
+		if runnableRouter.TokenValidate == nil || *runnableRouter.TokenValidate {
+			checkerError := kernel.Holder.Checker()
+			if checkerError != nil {
+				response := &bridge.ServiceResponse{Error: checkerError}
+				response.WriteResponse(w, nil)
+				return
+			}
+		}
+
+		runnableRouter.Controller.EndpointRunner(runnableRouter.Endpoint)
 	}
 	if !matchUrl {
 		response := &bridge.ServiceResponse{Error: errors.New("Url not found: " + r.URL.Path)}

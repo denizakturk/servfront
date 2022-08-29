@@ -1,10 +1,12 @@
 package router
 
 import (
-	"github.com/denizakturk/servfront/bridge"
 	"regexp"
 	"strings"
+
+	"github.com/denizakturk/servfront/bridge"
 )
+
 func (r *RouteAddress) PrepareAddress() {
 	var regexpString = ""
 	if nil == r.Params {
@@ -71,11 +73,12 @@ func (r *RouteAddress) ParamsToMap() (params map[string]string) {
 }
 
 type Route struct {
-	Name       string
-	Pattern    *regexp.Regexp
-	Address    *RouteAddress
-	Controller bridge.Struct
-	Endpoint   func() *bridge.ServiceResponse
+	Name          string
+	Pattern       *regexp.Regexp
+	Address       *RouteAddress
+	Controller    bridge.Struct
+	Endpoint      func() *bridge.ServiceResponse
+	TokenValidate *bool
 }
 
 type RouteAddressParameter struct {
