@@ -53,7 +53,7 @@ func (r *ServiceResponse) WriteResponse(w http.ResponseWriter, customErrorCode *
 	}
 
 	response, _ := json.Marshal(*r)
-	fmt.Fprintln(w, string(response))
+	fmt.Fprint(w, string(response))
 	r.Error = nil
 	r.DisplayError = nil
 	r.Data = nil
