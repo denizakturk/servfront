@@ -36,7 +36,7 @@ BreakHolder:
 			checkerError := kernel.Holder.Checker()
 			if checkerError != nil {
 				response := &bridge.ServiceResponse{Error: checkerError}
-				response.WriteResponse(w, nil)
+				response.WriteResponse(w)
 				return
 			}
 		}
@@ -46,8 +46,7 @@ BreakHolder:
 	}
 	if !matchUrl {
 		response := &bridge.ServiceResponse{Error: errors.New("Url not found: " + r.URL.Path)}
-		errorCode := 404
-		response.WriteResponse(w, &errorCode)
+		response.WriteResponse(w)
 	}
 }
 
